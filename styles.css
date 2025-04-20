@@ -1,0 +1,1432 @@
+/* Добавляем эффекты молний и тумана в начало файла */
+@keyframes lightning {
+    0% {
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.15;
+        transform: scale(1);
+    }
+    11% {
+        opacity: 0;
+        transform: scale(1.05);
+    }
+    14% {
+        opacity: 0.2;
+        transform: scale(1);
+    }
+    15% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 0;
+    }
+}
+
+@keyframes fog-move {
+    0% {
+        transform: translateX(-100%) translateY(0);
+    }
+    100% {
+        transform: translateX(100%) translateY(0);
+    }
+}
+
+/* Контейнер для молний */
+.lightning-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.lightning {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: 
+        linear-gradient(45deg, transparent 45%, rgba(57, 255, 20, 0.15) 45%, transparent 55%),
+        linear-gradient(-45deg, transparent 45%, rgba(57, 255, 20, 0.15) 45%, transparent 55%);
+    opacity: 0;
+    mix-blend-mode: screen;
+}
+
+.lightning:nth-child(1) {
+    animation: lightning 10s infinite;
+    animation-delay: 2s;
+}
+
+.lightning:nth-child(2) {
+    animation: lightning 10s infinite;
+    animation-delay: 7s;
+    transform: scale(-1, 1);
+}
+
+/* Туман на фоне */
+.fog-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    overflow: hidden;
+}
+
+.fog {
+    position: absolute;
+    width: 200%;
+    height: 100%;
+    background: linear-gradient(
+        to top,
+        rgba(57, 255, 20, 0.1) 0%,
+        rgba(13, 51, 6, 0.15) 20%,
+        rgba(57, 255, 20, 0.05) 40%,
+        transparent 80%
+    );
+    filter: blur(8px);
+    animation: fogFloat 25s linear infinite;
+    opacity: 0.4;
+}
+
+.fog-1 {
+    top: 0;
+    animation: fogFloat 30s linear infinite;
+    background: radial-gradient(
+        circle at center,
+        rgba(57, 255, 20, 0.1),
+        rgba(13, 51, 6, 0.15) 50%,
+        transparent
+    );
+}
+
+.fog-2 {
+    top: 50%;
+    animation: fogFloat 20s linear infinite;
+    animation-delay: -5s;
+    transform: scale(1.2);
+    background: radial-gradient(
+        circle at center,
+        rgba(57, 255, 20, 0.08),
+        rgba(13, 51, 6, 0.12) 40%,
+        transparent
+    );
+}
+
+.fog-3 {
+    top: 25%;
+    animation: fogFloat 35s linear infinite;
+    animation-delay: -10s;
+    transform: scale(0.9);
+    opacity: 0.3;
+    background: radial-gradient(
+        ellipse at center,
+        rgba(57, 255, 20, 0.05),
+        rgba(13, 51, 6, 0.1) 60%,
+        transparent
+    );
+}
+
+@keyframes fogFloat {
+    0% {
+        transform: translateX(-100%) translateY(0) scale(1);
+    }
+    50% {
+        transform: translateX(0%) translateY(-10px) scale(1.1);
+    }
+    100% {
+        transform: translateX(100%) translateY(0) scale(1);
+    }
+}
+
+/* Добавляем дополнительные слои тумана */
+.fog-4 {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 40%;
+    background: linear-gradient(
+        to top,
+        rgba(57, 255, 20, 0.15),
+        rgba(13, 51, 6, 0.1),
+        transparent
+    );
+    filter: blur(15px);
+    z-index: -1;
+}
+
+/* Добавляем частицы в тумане */
+@keyframes particleFloat {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: translateY(-100px) translateX(50px);
+        opacity: 0;
+    }
+}
+
+.fog-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+/* Обновляем существующие стили для лучшей интеграции с новыми эффектами */
+:root {
+    --primary-color: #39ff14; /* Ядовито-зеленый */
+    --secondary-color: #0d3306; /* Темно-зеленый */
+    --accent-color: #7fff00; /* Яркий зеленый */
+    --text-color: #ffffff;
+    --background-color: #0a1400; /* Очень темный зеленый */
+    --card-background: rgba(13, 51, 6, 0.3);
+    --magic-glow: 0 0 20px rgba(57, 255, 20, 0.7);
+}
+
+/* Магический фон */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: 
+        radial-gradient(circle at 20% 20%, rgba(57, 255, 20, 0.2), transparent 40%),
+        radial-gradient(circle at 80% 80%, rgba(13, 51, 6, 0.2), transparent 40%),
+        linear-gradient(45deg, #0a1400 0%, #0d3306 100%);
+    z-index: -3;
+}
+
+/* Магические частицы */
+.magic-particles {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+}
+
+@keyframes floatParticle {
+    0% {
+        transform: translateY(0) translateX(0);
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(50px);
+        opacity: 0;
+    }
+}
+
+/* Остальные стили */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    overflow-x: hidden;
+    cursor: url('icons/undead-cursor.png'), auto;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+}
+
+/* Магический эффект для карточек */
+.profile-header, .stat-card, .about-section, .contact-links a, .contact-links div {
+    background: rgba(45, 45, 45, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(123, 31, 162, 0.3);
+    box-shadow: var(--magic-glow);
+}
+
+.profile-header {
+    text-align: center;
+    margin-bottom: 3rem;
+    animation: fadeInDown 1s ease-out;
+    padding: 2rem;
+    border-radius: 20px;
+}
+
+.profile-avatar {
+    width: 200px;
+    height: 200px;
+    margin: 0 auto 1.5rem;
+    border-radius: 50%;
+    overflow: hidden;
+    border: 4px solid var(--primary-color);
+    box-shadow: 0 0 30px rgba(57, 255, 20, 0.8);
+    animation: magicPulse 4s ease-in-out infinite;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.profile-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    transition: transform 0.3s ease;
+    transform: translateX(20px);
+}
+
+.profile-avatar:hover img {
+    transform: scale(1.1) translateX(20px);
+}
+
+/* Обновляем анимацию свечения для аватара */
+@keyframes magicPulse {
+    0%, 100% {
+        box-shadow: 0 0 20px rgba(57, 255, 20, 0.5);
+    }
+    50% {
+        box-shadow: 0 0 40px rgba(57, 255, 20, 0.8);
+    }
+}
+
+/* Добавляем эффект вращающейся рамки */
+.profile-avatar::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: -2px;
+    right: -2px;
+    bottom: -2px;
+    border-radius: 50%;
+    background: linear-gradient(45deg, 
+        rgba(57, 255, 20, 0.8),
+        rgba(127, 255, 0, 0.8),
+        rgba(57, 255, 20, 0.8));
+    z-index: -1;
+    animation: rotateGradient 3s linear infinite;
+}
+
+@keyframes rotateGradient {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+h1 {
+    font-size: 2.5rem;
+    color: var(--accent-color);
+    margin-bottom: 0.5rem;
+    text-shadow: 0 0 20px rgba(57, 255, 20, 0.8);
+    position: relative;
+}
+
+h1::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 150px;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, var(--primary-color), transparent);
+}
+
+/* Стили для информации о персонаже */
+.character-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+}
+
+.role-text {
+    color: #39ff14;
+    font-size: 1.2em;
+    font-weight: bold;
+    text-shadow: 0 0 10px rgba(57, 255, 20, 0.5);
+}
+
+.class-spec-text {
+    color: #7fff00;
+    font-size: 1.1em;
+    text-shadow: 0 0 8px rgba(127, 255, 0, 0.5);
+}
+
+.stats-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    padding: 2rem;
+    border-radius: 15px;
+    text-align: center;
+    transition: all 0.4s ease;
+    animation: fadeInUp 1s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent, rgba(123, 31, 162, 0.2), transparent);
+    animation: magicSpin 5s linear infinite;
+    pointer-events: none;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    transition: all 0.3s ease;
+}
+
+.stat-card:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+
+.stat-card i {
+    font-size: 2.5rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    text-shadow: 0 0 10px rgba(123, 31, 162, 0.8);
+}
+
+.about-section {
+    padding: 2rem;
+    border-radius: 15px;
+    margin-bottom: 3rem;
+    animation: fadeInLeft 1s ease-out;
+    position: relative;
+    overflow: hidden;
+}
+
+.about-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(123, 31, 162, 0.2), transparent);
+    animation: magicSlide 5s linear infinite;
+}
+
+@keyframes magicSlide {
+    0% {
+        left: -100%;
+    }
+    50% {
+        left: 100%;
+    }
+    100% {
+        left: 100%;
+    }
+}
+
+.contact-section {
+    animation: fadeInRight 1s ease-out;
+}
+
+.contact-links a,
+.contact-links div {
+    padding: 1rem;
+    border-radius: 10px;
+    text-decoration: none;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-links a:hover,
+.contact-links div:hover {
+    background-color: rgba(123, 31, 162, 0.3);
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    transition: all 0.3s ease;
+}
+
+.contact-links i {
+    font-size: 1.2rem;
+    color: var(--accent-color);
+    text-shadow: 0 0 10px rgba(225, 190, 231, 0.8);
+}
+
+/* Добавляем магические частицы через JavaScript */
+.magic-particle {
+    position: absolute;
+    background: radial-gradient(circle, var(--primary-color) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    animation: floatParticle var(--duration) linear infinite;
+    opacity: 0;
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInLeft {
+    from {
+        opacity: 0;
+        transform: translateX(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@keyframes fadeInRight {
+    from {
+        opacity: 0;
+        transform: translateX(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Медиа-запросы для адаптивности */
+@media (max-width: 768px) {
+    .container {
+        padding: 1rem;
+    }
+
+    .profile-avatar {
+        width: 150px;
+        height: 150px;
+    }
+
+    h1 {
+        font-size: 2rem;
+    }
+
+    .stat-card {
+        padding: 1.5rem;
+    }
+
+    .contact-links {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Стили для секции WoW статистики */
+.wow-stats-section {
+    background: rgba(0, 0, 0, 0.95);
+    border: 1px solid #1a1a1a;
+    border-radius: 4px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.section-title {
+    color: #f8b700;
+    font-size: 24px;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Основная информация */
+.wow-info-panel {
+    background: rgba(15, 15, 15, 0.95);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 15px;
+    margin-bottom: 20px;
+}
+
+.wow-info-title {
+    color: #39ff14;
+    font-size: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #0d3306;
+}
+
+.wow-info-stat {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    margin: 5px 0;
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+}
+
+/* Иконки и текст */
+.class-icon {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+    border-radius: 2px;
+}
+
+.class-text {
+    color: #69ccf0;
+}
+
+.spec-text {
+    color: #a335ee;
+    margin-left: 5px;
+}
+
+.raid-text {
+    color: #a335ee;
+}
+
+.score-text {
+    color: #ff8000;
+}
+
+.ilvl-text {
+    color: #1eff00;
+}
+
+/* Рейдовый прогресс */
+.raid-progress-section {
+    margin-top: 20px;
+}
+
+.raid-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.raid-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.raid-name {
+    color: #f8b700;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.difficulty-progress {
+    display: flex;
+    gap: 10px;
+}
+
+.mythic { color: #ff8000; }
+.heroic { color: #a335ee; }
+.normal { color: #0091f2; }
+
+/* Экипировка */
+.equipment-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 10px;
+}
+
+.equipment-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.item-name {
+    color: #fff;
+}
+
+.item-level {
+    color: #7fff00;
+    font-weight: 600;
+}
+
+/* Таланты */
+.talents-section {
+    margin-top: 20px;
+}
+
+.spec-talents {
+    margin-bottom: 20px;
+}
+
+.talent-header {
+    color: #f8b700;
+    font-size: 14px;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    border-left: 2px solid #f8b700;
+}
+
+.talent-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 10px;
+}
+
+.talent-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 8px 10px;
+    color: #fff;
+}
+
+/* Кнопка обновления */
+.wow-refresh-button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    color: #f8b700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.wow-refresh-button:hover {
+    background: rgba(40, 40, 40, 0.8);
+    border-color: #f8b700;
+}
+
+/* Анимации */
+@keyframes updateGlow {
+    0% { box-shadow: 0 0 5px rgba(248, 183, 0, 0.2); }
+    50% { box-shadow: 0 0 15px rgba(248, 183, 0, 0.4); }
+    100% { box-shadow: 0 0 5px rgba(248, 183, 0, 0.2); }
+}
+
+.updated {
+    animation: updateGlow 1s ease-in-out;
+}
+
+/* Добавляем @font-face для шрифта Blizzard */
+@font-face {
+    font-family: 'Blizzard';
+    src: url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+    font-weight: normal;
+    font-style: normal;
+}
+
+/* Анимации */
+@keyframes statGlow {
+    0% { box-shadow: 0 0 5px rgba(248, 183, 0, 0.2); }
+    50% { box-shadow: 0 0 10px rgba(248, 183, 0, 0.3); }
+    100% { box-shadow: 0 0 5px rgba(248, 183, 0, 0.2); }
+}
+
+.wow-info-stat {
+    animation: statGlow 2s ease-in-out infinite;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .wow-stats-section {
+        padding: 1rem;
+    }
+    
+    .wow-info-panel {
+        max-width: 100%;
+    }
+    
+    .wow-info-title {
+        font-size: 14px;
+    }
+    
+    .wow-info-stat {
+        font-size: 13px;
+    }
+}
+
+/* Стили для WoW статистики */
+.wow-class-name {
+    color: #69ccf0;
+    font-weight: 600;
+    text-shadow: 0 0 4px rgba(105, 204, 240, 0.3);
+}
+
+.wow-parse-value {
+    font-weight: 600;
+}
+
+/* Цвета парсов */
+.wow-parse-value[data-value="100"] {
+    color: #39ff14;
+    text-shadow: 0 0 4px rgba(57, 255, 20, 0.3);
+}
+
+.wow-parse-value[data-value="95"] {
+    color: #7fff00;
+    text-shadow: 0 0 4px rgba(127, 255, 0, 0.3);
+}
+
+.wow-parse-value[data-value^="9"] {
+    color: #ff8000;
+    text-shadow: 0 0 4px rgba(255, 128, 0, 0.3);
+}
+
+.wow-parse-value[data-value^="7"] {
+    color: #a335ee;
+    text-shadow: 0 0 4px rgba(163, 53, 238, 0.3);
+}
+
+.wow-parse-value[data-value^="5"] {
+    color: #0091f2;
+    text-shadow: 0 0 4px rgba(0, 145, 242, 0.3);
+}
+
+.wow-parse-value[data-value^="2"] {
+    color: #1eff00;
+    text-shadow: 0 0 4px rgba(30, 255, 0, 0.3);
+}
+
+.wow-log-date {
+    font-size: 12px;
+    color: #888;
+    display: block;
+    margin-top: 2px;
+}
+
+/* Добавляем разделители между секциями */
+.wow-info-title:not(:first-child) {
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid #2c2c2c;
+}
+
+.wow-refresh-button {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    color: #f8b700;
+    padding: 8px 16px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: "Blizzard", "Helvetica Neue", Arial, sans-serif;
+    font-size: 14px;
+    margin-top: 10px;
+    width: 100%;
+    transition: all 0.2s ease;
+}
+
+.wow-refresh-button:hover {
+    background: rgba(40, 40, 40, 0.8);
+    border-color: #3c3c3c;
+    color: #fff;
+    box-shadow: 0 0 10px rgba(248, 183, 0, 0.3);
+}
+
+.wow-refresh-button:active {
+    transform: translateY(1px);
+}
+
+/* Стили для талантов */
+.wow-talent-section {
+    margin-bottom: 15px;
+}
+
+.wow-talent-header {
+    color: #f8b700;
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    padding-left: 10px;
+    border-left: 2px solid #f8b700;
+}
+
+/* Стили для рангов */
+.wow-rank {
+    font-size: 12px;
+    color: #888;
+    margin-left: 5px;
+}
+
+/* Стили для экипировки */
+.wow-item-level {
+    color: #1eff00;
+    text-shadow: 0 0 4px rgba(30, 255, 0, 0.3);
+}
+
+/* Улучшенные стили для секций */
+.wow-info-title {
+    position: relative;
+    overflow: hidden;
+}
+
+.wow-info-title::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #f8b700, transparent);
+}
+
+/* Стили для скроллбара при большом количестве информации */
+.wow-info-panel {
+    max-height: 800px;
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #f8b700 rgba(40, 40, 40, 0.6);
+}
+
+.wow-info-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.wow-info-panel::-webkit-scrollbar-track {
+    background: rgba(40, 40, 40, 0.6);
+    border-radius: 4px;
+}
+
+.wow-info-panel::-webkit-scrollbar-thumb {
+    background: #f8b700;
+    border-radius: 4px;
+}
+
+.wow-info-panel::-webkit-scrollbar-thumb:hover {
+    background: #ffcc33;
+} 
+
+/* Стили для рейтингов */
+.rankings-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.ranking-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ranking-label {
+    color: #f8b700;
+    font-weight: 600;
+}
+
+/* Стили для последних боев */
+.recent-fights-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.fight-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 10px;
+}
+
+.fight-boss {
+    color: #f8b700;
+    font-weight: 600;
+    margin-bottom: 5px;
+}
+
+.fight-info {
+    display: flex;
+    gap: 15px;
+    font-size: 0.9em;
+}
+
+.fight-difficulty {
+    color: #a335ee;
+}
+
+.fight-date {
+    color: #888;
+}
+
+/* Стили для характеристик */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.stat-item {
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+    border-radius: 3px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.stat-label {
+    color: #f8b700;
+}
+
+.stat-value {
+    color: #fff;
+    font-weight: 600;
+}
+
+/* Улучшенные стили для экипировки */
+.equipment-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.equipment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    border-radius: 3px;
+    background: rgba(40, 40, 40, 0.6);
+    border: 1px solid #2c2c2c;
+}
+
+.equipment-item.epic {
+    border-color: #39ff14;
+    background: rgba(57, 255, 20, 0.1);
+}
+
+.equipment-item.rare {
+    border-color: #0070dd;
+    background: rgba(0, 112, 221, 0.1);
+}
+
+.equipment-item.common {
+    border-color: #2c2c2c;
+}
+
+.item-details {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.item-socket {
+    color: #7fff00;
+}
+
+.item-enchant {
+    color: #39ff14;
+}
+
+/* Анимации обновления */
+@keyframes updatePulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(248, 183, 0, 0);
+    }
+    50% {
+        transform: scale(1.02);
+        box-shadow: 0 0 10px rgba(248, 183, 0, 0.3);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(248, 183, 0, 0);
+    }
+}
+
+.updated {
+    animation: updatePulse 1s ease-in-out;
+}
+
+/* Удаляем старые стили навигации */
+.nav-menu {
+    display: none;
+}
+
+/* При наведении на интерактивные элементы */
+.stat-card,
+.wow-info-panel,
+.equipment-item,
+.profile-avatar,
+button,
+a {
+    cursor: url('icons/undead-cursor-hover.png'), pointer;
+}
+
+/* Добавляем свечение при наведении */
+.stat-card:hover,
+.wow-info-panel:hover,
+.equipment-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 20px rgba(57, 255, 20, 0.4);
+    transition: all 0.3s ease;
+}
+
+/* Эффект нажатия */
+.stat-card:active,
+.wow-info-panel:active,
+.equipment-item:active {
+    transform: translateY(0);
+    box-shadow: 0 0 10px rgba(57, 255, 20, 0.2);
+}
+
+/* Mobile Adaptations */
+@media screen and (max-width: 768px) {
+    /* Container adjustments */
+    .container {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+    }
+
+    /* Profile section */
+    .profile-section {
+        flex-direction: column;
+        align-items: center;
+        padding: 15px;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        margin-bottom: 15px;
+    }
+
+    /* Stats and cards */
+    .stats-container {
+        grid-template-columns: 1fr;
+        gap: 15px;
+        padding: 10px;
+    }
+
+    .stat-card {
+        width: 100%;
+        margin: 5px 0;
+        padding: 12px;
+    }
+
+    /* WoW info panel */
+    .wow-info-panel {
+        width: 100%;
+        margin: 10px 0;
+        padding: 15px;
+    }
+
+    /* Equipment grid */
+    .equipment-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .equipment-item {
+        padding: 8px;
+        font-size: 14px;
+    }
+
+    /* Rankings grid */
+    .rankings-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    /* Recent fights */
+    .recent-fights-list {
+        padding: 10px;
+    }
+
+    .fight-item {
+        padding: 8px;
+        margin: 5px 0;
+    }
+
+    /* Slower animations for mobile */
+    @media (max-width: 768px) {
+        /* Lightning effect */
+        @keyframes lightning {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) rotate(-15deg);
+            }
+            50% {
+                opacity: 0.15;
+                transform: scale(1.1) rotate(15deg);
+            }
+            100% {
+                opacity: 0;
+                transform: scale(0.8) rotate(-15deg);
+            }
+        }
+
+        .lightning {
+            animation: lightning 30s infinite; /* Slower by 3x */
+        }
+
+        /* Fog effect */
+        @keyframes fog {
+            0% {
+                transform: translateX(-100%) translateY(0);
+            }
+            100% {
+                transform: translateX(100%) translateY(-20%);
+            }
+        }
+
+        .fog {
+            animation: fog 45s linear infinite; /* Slower by 3x */
+        }
+
+        /* Magic pulse */
+        @keyframes magicPulse {
+            0% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: scale(1.05);
+                opacity: 0.9;
+            }
+            100% {
+                transform: scale(1);
+                opacity: 0.8;
+            }
+        }
+
+        .magic-pulse {
+            animation: magicPulse 9s ease-in-out infinite; /* Slower by 3x */
+        }
+
+        /* Magic spin */
+        @keyframes magicSpin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .magic-spin {
+            animation: magicSpin 30s linear infinite; /* Slower by 3x */
+        }
+
+        /* Fade in */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 3s ease-out; /* Slower by 3x */
+        }
+
+        /* Hover effects */
+        .stat-card:hover,
+        .equipment-item:hover,
+        .wow-info-panel:hover {
+            transform: translateY(-2px);
+            transition: all 0.9s ease; /* Slower by 3x */
+        }
+    }
+
+    /* Text adjustments */
+    h1 {
+        font-size: 24px;
+        margin: 10px 0;
+    }
+
+    h2 {
+        font-size: 20px;
+        margin: 8px 0;
+    }
+
+    p {
+        font-size: 14px;
+        line-height: 1.4;
+    }
+
+    /* Prevent horizontal scroll */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Fix for any absolute positioned elements */
+    .lightning,
+    .fog {
+        width: 100vw;
+        left: 0;
+    }
+
+    /* Spacing fixes */
+    * {
+        box-sizing: border-box;
+    }
+
+    /* Better touch targets */
+    button,
+    a,
+    .interactive-element {
+        min-height: 44px;
+        min-width: 44px;
+        padding: 12px;
+    }
+}
+
+/* Prevent any overflow issues */
+* {
+    max-width: 100%;
+}
+
+/* Стили для мерцающего курсора */
+.cursor-glow {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    background: radial-gradient(circle, rgba(57, 255, 20, 0.8) 0%, rgba(57, 255, 20, 0.4) 40%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9999;
+    mix-blend-mode: screen;
+    filter: blur(2px);
+    animation: cursorPulse 2s ease-in-out infinite;
+}
+
+.trail-dot {
+    position: fixed;
+    width: 8px;
+    height: 8px;
+    background: radial-gradient(circle, rgba(57, 255, 20, 0.6) 0%, transparent 70%);
+    border-radius: 50%;
+    pointer-events: none;
+    transform: translate(-50%, -50%);
+    z-index: 9998;
+    mix-blend-mode: screen;
+    animation: trailFade 1s ease-out forwards;
+}
+
+@keyframes cursorPulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.5);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes trailFade {
+    0% {
+        opacity: 0.6;
+        transform: translate(-50%, -50%) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(0.3);
+    }
+}
+
+/* Добавляем мерцающий эффект при наведении на интерактивные элементы */
+.stat-card:hover ~ .cursor-glow,
+.wow-info-panel:hover ~ .cursor-glow,
+.equipment-item:hover ~ .cursor-glow,
+.profile-avatar:hover ~ .cursor-glow,
+button:hover ~ .cursor-glow,
+a:hover ~ .cursor-glow {
+    animation: cursorPulseHover 0.8s ease-in-out infinite;
+    background: radial-gradient(circle, rgba(57, 255, 20, 1) 0%, rgba(57, 255, 20, 0.6) 40%, transparent 70%);
+    width: 30px;
+    height: 30px;
+}
+
+@keyframes cursorPulseHover {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: translate(-50%, -50%) scale(1.8);
+        opacity: 0.8;
+    }
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 1;
+    }
+}
