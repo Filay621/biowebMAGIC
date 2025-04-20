@@ -1,15 +1,1228 @@
-<!DOCTYPE html> 
-<html lang="ru"> 
-<head> 
-    <meta charset="UTF-8"> 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Охаёшка - DH Tank</title> 
-    <link href="css/style.css" rel="stylesheet"> 
-</head> 
-<body> 
-    <div class="hero"> 
-        <h1>Охаёшка</h1> 
-        <p>Demon Hunter Tank • M+ 3014 • Гордунни (EU)</p> 
-    </div> 
-</body> 
+в<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Охаёшка - Character Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:wght@400;600&family=Marcellus+SC&family=Cinzel+Decorative:wght@700,900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --wow-gold: #50fa7b;
+            --wow-blue: #00aeff;
+            --wow-dark: #15171e;
+            --wow-light: #50fa7b;
+            --wow-text: #ffffff;
+            --toxic-glow: #50fa7b;
+            --toxic-shadow: rgba(80, 250, 123, 0.5);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            cursor: none !important;
+        }
+
+        body {
+            background-color: var(--wow-dark);
+            color: var(--wow-text);
+            font-family: 'Crimson Pro', serif;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+            background-image: url('https://bnetcmsus-a.akamaihd.net/cms/template_resource/4TBVVQ8N24WF1648770061560.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(21, 23, 30, 0.85);
+            z-index: 1;
+        }
+
+        .smoke {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to top, 
+                rgba(21, 23, 30, 0.8), 
+                transparent);
+            pointer-events: none;
+            z-index: 2;
+        }
+
+        .profile-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            position: relative;
+            z-index: 3;
+        }
+
+        .wow-border {
+            position: relative;
+            border: 2px solid var(--toxic-glow);
+            border-radius: 8px;
+            padding: 20px;
+            background: rgba(21, 23, 30, 0.9);
+            box-shadow: 0 0 20px var(--toxic-shadow);
+            animation: neonPulse 2s infinite;
+        }
+
+        @keyframes neonPulse {
+            0% { box-shadow: 0 0 20px var(--toxic-shadow); }
+            50% { box-shadow: 0 0 30px var(--toxic-shadow), 0 0 40px var(--toxic-shadow); }
+            100% { box-shadow: 0 0 20px var(--toxic-shadow); }
+        }
+
+        .character-header {
+            text-align: center;
+            margin-bottom: 40px;
+            position: relative;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+            background: linear-gradient(to bottom,
+                rgba(0, 0, 0, 0) 0%,
+                rgba(80, 250, 123, 0.05) 50%,
+                rgba(0, 0, 0, 0) 100%
+            );
+        }
+
+        .character-avatar {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            border: 3px solid var(--wow-gold);
+            margin: 0 auto 20px;
+            box-shadow: 
+                0 0 30px rgba(80, 250, 123, 0.3),
+                0 0 50px rgba(80, 250, 123, 0.1);
+            transition: all 0.3s ease;
+            object-fit: cover;
+            display: block;
+        }
+
+        .character-avatar:hover {
+            transform: scale(1.05);
+            border-color: #fff;
+            box-shadow: 
+                0 0 40px rgba(80, 250, 123, 0.4),
+                0 0 60px rgba(80, 250, 123, 0.2);
+        }
+
+        .character-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .character-name {
+            font-family: 'Cinzel Decorative', serif;
+            font-weight: 900;
+            font-size: 3.8em;
+            color: var(--wow-gold);
+            text-shadow: 
+                0 0 10px rgba(80, 250, 123, 0.5),
+                0 0 20px rgba(80, 250, 123, 0.3),
+                0 0 30px rgba(80, 250, 123, 0.2);
+            margin: 0;
+            line-height: 1.2;
+            letter-spacing: 2px;
+            position: relative;
+            padding: 0 40px;
+        }
+
+        .character-name::before,
+        .character-name::after {
+            content: '✧';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--wow-gold);
+            font-size: 0.5em;
+            opacity: 0.8;
+        }
+
+        .character-name::before { left: 0; }
+        .character-name::after { right: 0; }
+
+        .character-titles {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .character-title {
+            font-family: 'Marcellus SC', serif;
+            color: #fff;
+            text-shadow: 
+                0 0 5px rgba(255, 255, 255, 0.5),
+                0 0 10px rgba(80, 250, 123, 0.3);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .character-title:first-child {
+            font-size: 1.8em;
+            color: var(--wow-gold);
+        }
+
+        .character-title:last-child {
+            font-size: 1.4em;
+            opacity: 0.9;
+        }
+
+        .tabs {
+            display: flex;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--wow-gold);
+            padding: 0 20px;
+        }
+
+        .tab {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background: transparent;
+            border: none;
+            color: var(--wow-text);
+            font-family: 'Marcellus SC', serif;
+            font-size: 1.2em;
+            cursor: pointer;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .tab.active {
+            color: var(--wow-gold);
+        }
+
+        .tab::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--wow-gold);
+            transform: scaleX(0);
+            transition: transform 0.4s ease-in-out;
+            transform-origin: left;
+        }
+
+        .tab.active::after {
+            transform: scaleX(1);
+        }
+
+        .tab:hover::after {
+            transform: scaleX(0.5);
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .content-wrapper {
+            position: relative;
+        }
+
+        .section-title {
+            font-family: 'Marcellus SC', serif;
+            color: var(--wow-gold);
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            padding: 1rem;
+            background: rgba(0, 0, 0, 0.7);
+            border: 1px solid var(--wow-gold);
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.5rem;
+            background: rgba(20, 20, 20, 0.8);
+            border: 1px solid var(--wow-gold);
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 10px var(--wow-gold);
+        }
+
+        .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 4px;
+            border: 2px solid var(--wow-gold);
+            box-shadow: 0 0 10px rgba(80, 250, 123, 0.3);
+            transition: all 0.3s ease;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            border: 1px solid var(--wow-gold);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-label {
+            color: var(--wow-gold);
+            font-size: 0.9rem;
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-value {
+            color: #fff;
+            font-size: 1rem;
+        }
+
+        .about-section {
+            line-height: 1.8;
+            font-size: 1.1em;
+            padding: 30px;
+        }
+
+        .contact-links {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 30px;
+        }
+
+        .contact-link {
+            display: flex;
+            align-items: center;
+            padding: 20px;
+            background: rgba(21, 23, 30, 0.9);
+            border: 1px solid var(--wow-gold);
+            border-radius: 8px;
+            color: var(--wow-text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .contact-link:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(248, 183, 0, 0.3);
+        }
+
+        .contact-icon {
+            color: var(--wow-gold);
+            font-size: 1.5em;
+            margin-right: 15px;
+        }
+
+        .dungeon-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .dungeon-item {
+            background: rgba(21, 23, 30, 0.9);
+            border: 1px solid var(--wow-gold);
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .dungeon-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 0 20px rgba(248, 183, 0, 0.3);
+        }
+
+        .dungeon-icon {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--wow-gold);
+        }
+
+        .dungeon-name {
+            color: var(--wow-gold);
+            font-size: 1.2em;
+            margin-bottom: 5px;
+        }
+
+        .dynamic-lighting {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), 
+                rgba(80, 250, 123, 0.08) 0%,
+                transparent 25%);
+            transition: background 0.3s ease;
+        }
+
+        .bottom-glow {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            background: radial-gradient(ellipse at bottom,
+                rgba(80, 250, 123, 0.15) 0%,
+                rgba(80, 250, 123, 0.05) 40%,
+                transparent 100%);
+            pointer-events: none;
+            z-index: 2;
+            animation: glowPulse 8s infinite alternate;
+        }
+
+        @keyframes glowPulse {
+            0% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
+
+        .bubbles {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 2;
+            overflow: hidden;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -20px;
+            background: rgba(80, 250, 123, 0.1);
+            border: 1px solid rgba(80, 250, 123, 0.3);
+            border-radius: 50%;
+            animation: float 8s infinite;
+            filter: blur(1px);
+            width: 10px;
+            height: 10px;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0;
+            }
+            50% {
+                opacity: 0.3;
+            }
+            100% {
+                transform: translateY(-100vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+
+        .refresh-indicator {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(26, 23, 23, 0.95);
+            border: 2px solid var(--toxic-glow);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            transform: translateZ(0);
+        }
+
+        .fog {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 60%;
+            background: linear-gradient(
+                to top,
+                rgba(80, 250, 123, 0.1) 0%,
+                transparent 100%
+            );
+            filter: blur(8px);
+            animation: fogMove 20s infinite alternate;
+            z-index: 2;
+            pointer-events: none;
+        }
+
+        @keyframes fogMove {
+            0% { transform: translateX(-5%) translateY(0); }
+            100% { transform: translateX(5%) translateY(-10%); }
+        }
+
+        .cursor-wrapper {
+            position: fixed;
+            pointer-events: none;
+            z-index: 9999;
+            mix-blend-mode: screen;
+            transform: translate(-50%, -50%);
+        }
+
+        .custom-cursor {
+            width: 12px;
+            height: 12px;
+            background: var(--wow-gold);
+            border-radius: 50%;
+            position: relative;
+            transition: transform 0.2s ease;
+            box-shadow: 0 0 10px var(--wow-gold);
+            opacity: 0.8;
+        }
+
+        .cursor-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 30px;
+            height: 30px;
+            border: 1px solid var(--wow-gold);
+            border-radius: 50%;
+            opacity: 0.6;
+            animation: cursorRingPulse 2s infinite;
+        }
+
+        .cursor-ring::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border: 1px solid var(--wow-gold);
+            border-radius: 50%;
+            opacity: 0.3;
+            animation: cursorRingRotate 3s linear infinite;
+        }
+
+        .cursor-trail {
+            position: fixed;
+            width: 8px;
+            height: 8px;
+            pointer-events: none;
+            z-index: 9998;
+            opacity: 0;
+            background: var(--wow-gold);
+            border-radius: 50%;
+            mix-blend-mode: screen;
+            transition: all 0.2s ease;
+            filter: blur(2px);
+            box-shadow: 0 0 6px var(--wow-gold);
+        }
+
+        @keyframes cursorRingPulse {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 0.3; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0.6; }
+        }
+
+        @keyframes cursorRingRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Эффекты при наведении на интерактивные элементы */
+        .character-avatar:hover ~ .cursor-wrapper .custom-cursor,
+        .character-title:hover ~ .cursor-wrapper .custom-cursor,
+        .tab:hover ~ .cursor-wrapper .custom-cursor,
+        .equipment-item:hover ~ .cursor-wrapper .custom-cursor {
+            transform: scale(1.5);
+        }
+
+        .cursor-wrapper.clicking .custom-cursor {
+            transform: scale(0.8);
+            opacity: 1;
+        }
+
+        .cursor-wrapper.clicking .cursor-ring {
+            animation: none;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 1;
+        }
+
+        /* Добавляем декоративные элементы вокруг заголовков */
+        .character-title::before,
+        .character-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(
+                to right,
+                transparent,
+                var(--wow-gold),
+                transparent
+            );
+        }
+
+        .character-title::before { left: -60px; }
+        .character-title::after { right: -60px; }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            position: relative;
+            z-index: 3;
+        }
+
+        .footer img {
+            display: none;
+        }
+
+        .warcraft-content {
+            display: grid;
+            gap: 30px;
+        }
+
+        .stats-section {
+            background: rgba(21, 23, 30, 0.9);
+            border: 2px solid var(--toxic-glow);
+            border-radius: 8px;
+            padding: 20px;
+        }
+
+        .equipment-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            border: 2px solid var(--wow-gold);
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .equipment-item {
+            background: rgba(30, 30, 30, 0.95);
+            padding: 15px;
+            border: 1px solid var(--wow-gold);
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+
+        .equipment-item:hover {
+            transform: translateY(-2px);
+            border-color: #fff;
+            box-shadow: 0 0 15px rgba(80, 250, 123, 0.3);
+            background: rgba(40, 40, 40, 0.95);
+        }
+
+        .equipment-item .stat-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 4px;
+            border: 2px solid var(--wow-gold);
+            box-shadow: 0 0 10px rgba(80, 250, 123, 0.2);
+        }
+
+        .equipment-item .stat-content {
+            flex: 1;
+        }
+
+        .equipment-item .stat-label {
+            color: var(--wow-gold);
+            font-size: 1.1rem;
+            margin-bottom: 4px;
+            font-family: 'Marcellus SC', serif;
+        }
+
+        .equipment-item .stat-value {
+            color: #fff;
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .refresh-button {
+            position: fixed;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(21, 23, 30, 0.95);
+            border: 2px solid var(--toxic-glow);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-button i {
+            color: var(--toxic-glow);
+            font-size: 1.5em;
+            transition: all 0.3s ease;
+        }
+
+        .refresh-button:hover {
+            box-shadow: 0 0 20px var(--toxic-glow);
+        }
+
+        .refresh-button:hover i {
+            transform: rotate(180deg);
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .refresh-button.updating i {
+            animation: spin 1s infinite linear;
+        }
+
+        /* Стили для подписи */
+        .signature {
+            text-align: center;
+            padding: 30px 0;
+            position: relative;
+            z-index: 3;
+        }
+
+        .signature::before,
+        .signature::after {
+            content: '✧';
+            color: var(--wow-gold);
+            margin: 0 15px;
+            opacity: 0.7;
+        }
+
+        .signature-text {
+            font-family: 'Cinzel Decorative', serif;
+            color: var(--wow-gold);
+            font-size: 1.2em;
+            text-shadow: 0 0 10px rgba(80, 250, 123, 0.5);
+            letter-spacing: 2px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .signature-text:hover {
+            color: #fff;
+            text-shadow: 
+                0 0 10px var(--wow-gold),
+                0 0 20px var(--wow-gold),
+                0 0 30px var(--wow-gold);
+        }
+
+        .year {
+            font-family: 'Marcellus SC', serif;
+            color: #fff;
+            opacity: 0.8;
+            margin-left: 10px;
+        }
+
+        /* Медиа-запросы для мобильных устройств */
+        @media (max-width: 768px) {
+            .character-header {
+                padding: 20px 10px;
+            }
+
+            .character-name {
+                font-size: 2.5em;
+            }
+
+            .character-title {
+                font-size: 1.2em;
+            }
+
+            .character-avatar {
+                width: 150px;
+                height: 150px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .equipment-list {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+
+            .contact-links {
+                grid-template-columns: 1fr;
+            }
+
+            /* Замедляем анимации на мобильных */
+            @keyframes glowPulse {
+                0% { opacity: 0.4; }
+                100% { opacity: 0.8; }
+            }
+
+            @keyframes fogMove {
+                0% { transform: translateX(-2%) translateY(0); }
+                100% { transform: translateX(2%) translateY(-5%); }
+            }
+
+            .bottom-glow {
+                animation-duration: 12s;
+            }
+
+            .fog {
+                animation-duration: 30s;
+            }
+
+            /* Уменьшаем количество и скорость пузырьков */
+            .bubble {
+                animation-duration: 12s !important;
+            }
+
+            /* Оптимизация неоновых эффектов */
+            .wow-border {
+                animation-duration: 4s;
+            }
+
+            .character-name {
+                text-shadow: 0 0 8px rgba(80, 250, 123, 0.4);
+            }
+
+            .stat-item, .equipment-item {
+                transition: transform 0.4s ease;
+            }
+
+            .stat-item:hover, .equipment-item:hover {
+                transform: translateY(-2px);
+            }
+
+            /* Скрываем некоторые эффекты на мобильных */
+            .cursor-wrapper, .cursor-trail {
+                display: none;
+            }
+
+            * {
+                cursor: auto !important;
+            }
+
+            .dynamic-lighting {
+                opacity: 0.5;
+            }
+
+            .contact-link {
+                padding: 15px;
+                font-size: 0.9em;
+            }
+
+            .signature-text {
+                font-size: 1em;
+            }
+        }
+
+        /* Анимации появления */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Базовое состояние для анимируемых элементов */
+        .animate-on-load {
+            opacity: 0;
+        }
+
+        /* Только для десктопа */
+        @media (min-width: 769px) {
+            .character-header {
+                animation: fadeInUp 1s ease-out 0.2s forwards;
+            }
+
+            .tabs {
+                animation: fadeInUp 1s ease-out 0.4s forwards;
+            }
+
+            .about-section {
+                animation: fadeInUp 1s ease-out 0.6s forwards;
+            }
+
+            .warcraft-content {
+                animation: fadeInUp 1s ease-out 0.8s forwards;
+            }
+
+            .contact-links {
+                animation: fadeInUp 1s ease-out 1s forwards;
+            }
+
+            .signature {
+                animation: fadeInUp 1s ease-out 1.2s forwards;
+            }
+
+            .refresh-button {
+                animation: fadeInUp 1s ease-out 1.4s forwards;
+            }
+        }
+
+        /* Анимации для контента */
+        .fade-enter {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        .fade-exit {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .fade-exit-active {
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
+        }
+
+        /* Стили для внутренних элементов */
+        .content-item {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        .section.active .content-item {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Задержки для последовательной анимации */
+        .section.active .content-item:nth-child(1) { transition-delay: 0.1s; }
+        .section.active .content-item:nth-child(2) { transition-delay: 0.2s; }
+        .section.active .content-item:nth-child(3) { transition-delay: 0.3s; }
+        .section.active .content-item:nth-child(4) { transition-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="smoke"></div>
+    <div class="dynamic-lighting"></div>
+    <div class="bottom-glow"></div>
+    <div class="bubbles"></div>
+    <div class="fog"></div>
+    <div class="cursor-wrapper">
+        <div class="custom-cursor">
+            <div class="cursor-ring"></div>
+            <div class="cursor-dot"></div>
+        </div>
+    </div>
+    
+    <div class="profile-container">
+        <div class="character-header wow-border animate-on-load">
+            <img src="icons/demonava.jpg" alt="Охаёшка" class="character-avatar" id="characterAvatar">
+            <div class="character-info">
+                <h1 class="character-name">Охаёшка</h1>
+                <div class="character-titles">
+                    <div class="character-title">Охотник на демонов (Месть)</div>
+                    <div class="character-title">Танк</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tabs animate-on-load">
+            <button class="tab active" data-tab="about">О себе</button>
+            <button class="tab" data-tab="warcraft">World of Warcraft</button>
+        </div>
+
+        <div class="content-wrapper">
+            <div class="section about-section wow-border active animate-on-load" data-section="about">
+                <div class="content-item">
+                    <p>Привет! Я — М+ игрок с рейтингом 3014, активно пушу ключи и хорошо знаю текущий сезон. Есть оранжевые логи, стабильно показываю высокий перформанс. Рассматриваю возможность освоения эпохального рейда — мотивирован, с хорошей реакцией и пониманием механик. В поиске адекватного и сплочённого статика, где ценится ответственность, стабильность и приятная атмосфера. Быстро учусь, всегда открыт к конструктиву и готов вкладываться в прогресс гильдии.</p>
+                </div>
+                
+                <div class="content-item">
+                    <div class="contact-links">
+                        <a href="https://raider.io/characters/eu/gordunni/%D0%9E%D1%85%D0%B0%D1%91%D1%88%D0%BA%D0%B0" class="contact-link" target="_blank">
+                            <i class="fas fa-chart-line contact-icon"></i>
+                            <span>Raider.IO</span>
+                        </a>
+                        <a href="https://ru.warcraftlogs.com/character/eu/%D0%B3%D0%BE%D1%80%D0%B4%D1%83%D0%BD%D0%BD%D0%B8/%d0%9e%d1%85%d0%b0%d1%91%d1%88%d0%ba%d0%b0?zone=43" class="contact-link" target="_blank">
+                            <i class="fas fa-chart-bar contact-icon"></i>
+                            <span>Warcraft Logs</span>
+                        </a>
+                        <div class="contact-link">
+                            <i class="fab fa-battle-net contact-icon"></i>
+                            <span>România#21341</span>
+                        </div>
+                        <a href="https://discord.com/users/twelvik19" class="contact-link" target="_blank">
+                            <i class="fab fa-discord contact-icon"></i>
+                            <span>Twelven</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section wow-border animate-on-load" data-section="warcraft">
+                <div class="warcraft-content">
+                    <div class="content-item stats-section">
+                        <h2 class="section-title">Характеристики</h2>
+                        <div class="stats-grid"></div>
+                    </div>
+
+                    <div class="content-item stats-section">
+                        <h2 class="section-title">Экипировка</h2>
+                        <div class="equipment-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <button class="refresh-button animate-on-load" id="refreshButton" title="Обновить данные">
+        <i class="fas fa-sync-alt"></i>
+    </button>
+
+    <footer class="signature animate-on-load">
+        <a href="https://t.me/Filay31" class="signature-text" target="_blank">By Filay</a>
+        <span class="year" id="currentYear"></span>
+    </footer>
+
+    <script src="warcraft-logs-refresh.js"></script>
+    <script>
+        // Звуки
+        const hoverSound = new Audio('sound/1.mp3');
+        const ambientSound = new Audio('sound/GhostlandsNight.ogg');
+        
+        hoverSound.volume = 0.1;
+        ambientSound.volume = 0.3;
+        ambientSound.loop = true;
+
+        // Динамическое освещение
+        const lighting = document.querySelector('.dynamic-lighting');
+        document.addEventListener('mousemove', (e) => {
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            lighting.style.setProperty('--x', `${x}%`);
+            lighting.style.setProperty('--y', `${y}%`);
+        });
+
+        // Создание и управление пузырьками
+        const bubbles = document.querySelector('.bubbles');
+        let bubbleInterval;
+
+        function createBubble() {
+            const isMobile = window.innerWidth <= 768;
+            const bubble = document.createElement('div');
+            bubble.className = 'bubble';
+            
+            if (isMobile && document.querySelectorAll('.bubble').length > 5) {
+                return;
+            }
+
+            bubble.style.left = `${Math.random() * 100}%`;
+            bubble.style.width = bubble.style.height = `${Math.random() * (isMobile ? 15 : 30) + 5}px`;
+            bubble.style.animationDuration = `${Math.random() * (isMobile ? 8 : 4) + (isMobile ? 8 : 4)}s`;
+            bubbles.appendChild(bubble);
+            
+            bubble.addEventListener('animationend', () => bubble.remove());
+        }
+
+        function updateBubbleInterval() {
+            if (window.innerWidth <= 768) {
+                clearInterval(bubbleInterval);
+                bubbleInterval = setInterval(createBubble, 1500);
+            } else {
+                clearInterval(bubbleInterval);
+                bubbleInterval = setInterval(createBubble, 800);
+            }
+        }
+
+        bubbleInterval = setInterval(createBubble, 800);
+        window.addEventListener('resize', updateBubbleInterval);
+        updateBubbleInterval();
+
+        // Автоматическое воспроизведение фоновой музыки при взаимодействии
+        document.addEventListener('click', () => {
+            ambientSound.play().catch(() => {});
+        }, { once: true });
+
+        // Обработчики звуков
+        document.querySelectorAll('.stat-item, .contact-link, .dungeon-item, .tab').forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                hoverSound.currentTime = 0;
+                hoverSound.play().catch(() => {});
+            });
+        });
+
+        // Функция для создания элемента следа
+        function createTrailElement() {
+            const trail = document.createElement('div');
+            trail.className = 'cursor-trail';
+            document.body.appendChild(trail);
+            return trail;
+        }
+
+        const cursorWrapper = document.querySelector('.cursor-wrapper');
+        const trailElements = Array.from({ length: 12 }, createTrailElement);
+        let currentTrailIndex = 0;
+        let lastX = 0;
+        let lastY = 0;
+        let isMouseDown = false;
+
+        document.addEventListener('mousemove', (e) => {
+            cursorWrapper.style.left = e.clientX + 'px';
+            cursorWrapper.style.top = e.clientY + 'px';
+
+            // Обновляем освещение
+            const x = (e.clientX / window.innerWidth) * 100;
+            const y = (e.clientY / window.innerHeight) * 100;
+            lighting.style.setProperty('--x', `${x}%`);
+            lighting.style.setProperty('--y', `${y}%`);
+
+            // Эффект следа
+            const trail = trailElements[currentTrailIndex];
+            const distance = Math.hypot(e.clientX - lastX, e.clientY - lastY);
+            
+            if (distance > 4) {
+                trail.style.left = (e.clientX - 10) + 'px';
+                trail.style.top = (e.clientY - 10) + 'px';
+                trail.style.opacity = '0.4';
+                trail.style.transform = `scale(${isMouseDown ? 1.2 : 1})`;
+                
+                setTimeout(() => {
+                    trail.style.opacity = '0';
+                    trail.style.transform = 'scale(0.8)';
+                }, 50);
+
+                currentTrailIndex = (currentTrailIndex + 1) % trailElements.length;
+                lastX = e.clientX;
+                lastY = e.clientY;
+            }
+        });
+
+        document.addEventListener('mousedown', () => {
+            isMouseDown = true;
+            cursorWrapper.classList.add('clicking');
+            
+            const clickEffect = document.createElement('div');
+            clickEffect.className = 'cursor-trail';
+            clickEffect.style.left = (lastX - 15) + 'px';
+            clickEffect.style.top = (lastY - 15) + 'px';
+            clickEffect.style.width = '40px';
+            clickEffect.style.height = '40px';
+            clickEffect.style.opacity = '0.8';
+            document.body.appendChild(clickEffect);
+
+            setTimeout(() => {
+                clickEffect.style.opacity = '0';
+                clickEffect.style.transform = 'scale(1.5)';
+                setTimeout(() => clickEffect.remove(), 200);
+            }, 50);
+        });
+
+        document.addEventListener('mouseup', () => {
+            isMouseDown = false;
+            cursorWrapper.classList.remove('clicking');
+        });
+
+        // Добавляем эффект при наведении на интерактивные элементы
+        const interactiveElements = document.querySelectorAll('a, button, .character-avatar, .tab, .equipment-item');
+        interactiveElements.forEach(element => {
+            element.addEventListener('mouseenter', () => {
+                cursorWrapper.querySelector('.custom-cursor').style.transform = 'scale(1.2)';
+            });
+            
+            element.addEventListener('mouseleave', () => {
+                cursorWrapper.querySelector('.custom-cursor').style.transform = 'scale(1)';
+            });
+        });
+
+        // Простое переключение табов без анимации
+        const tabs = document.querySelectorAll('.tab');
+        const sections = document.querySelectorAll('.section');
+
+        tabs.forEach(tab => {
+            tab.addEventListener('click', () => {
+                const target = tab.dataset.tab;
+                
+                // Переключаем табы
+                tabs.forEach(t => t.classList.remove('active'));
+                tab.classList.add('active');
+                
+                // Переключаем секции
+                sections.forEach(s => s.classList.remove('active'));
+                document.querySelector(`[data-section="${target}"]`).classList.add('active');
+            });
+        });
+
+        // Обновление года
+        function updateYear() {
+            document.getElementById('currentYear').textContent = new Date().getFullYear();
+        }
+        updateYear();
+
+        // Оптимизация анимаций для мобильных
+        function checkMobile() {
+            const isMobile = window.innerWidth <= 768;
+            document.body.classList.toggle('mobile', isMobile);
+        }
+
+        window.addEventListener('resize', checkMobile);
+        checkMobile();
+
+        // Добавляем класс для запуска анимаций после загрузки всех ресурсов
+        window.addEventListener('load', function() {
+            // Небольшая задержка для гарантии готовности DOM
+            setTimeout(() => {
+                document.querySelectorAll('.animate-on-load').forEach(element => {
+                    element.style.opacity = '1';
+                });
+            }, 100);
+        });
+    </script>
+</body>
 </html> 

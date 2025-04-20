@@ -2,254 +2,272 @@
 // @name         WarcraftLogs Auto Refresh
 // @namespace    http://tampermonkey.net/
 // @version      1.1
-// @description  Расширенное автообновление WarcraftLogs с подробной информацией
+// @description  Автоматическое обновление данных с WarcraftLogs
 // @author       Your Name
-// @match        https://ru.warcraftlogs.com/character/eu/гордунни/Охаёшка
+// @match        https://ru.warcraftlogs.com/character/eu/гордунни/Охаёшка*
 // @grant        GM_xmlhttpRequest
 // ==/UserScript==
 
-// Скрипт для автоматического обновления WoW статистики
-window.addEventListener('load', function() {
-    // Функция для форматирования данных с учетом локализации
-    function formatData(data) {
-        if (!data || typeof data !== 'string') return window.translations.translate('noData');
-        return data.trim();
-    }
+const dungeonIcons = {
+    'Рассвет Бесконечности: Галакронд': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_dawnoftheinfinite_galakrond.jpg',
+    'Рассвет Бесконечности: Мурозонд': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_dawnoftheinfinite_murozond.jpg',
+    'Академия Алгет\'ар': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_algethar.jpg',
+    'Лазурное хранилище': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_azurevault.jpg',
+    'Нелтарий': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_neltharus.jpg',
+    'Крепость Нок\'уд': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_nokhudfensive.jpg',
+    'Рубиновые Омуты Жизни': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_rubylifepools.jpg',
+    'Чертоги Насыщения': 'https://wow.zamimg.com/images/wow/icons/large/achievement_dungeon_uldaman_legacy.jpg'
+};
 
-    // Функция для форматирования процентиля
-    function formatPercentile(value) {
-        if (!value) return 'Нет данных';
-        const num = parseFloat(value);
-        if (num === 100) return `<span class="wow-parse-value" data-value="100">${num}</span>`;
-        if (num >= 95) return `<span class="wow-parse-value" data-value="95">${num}</span>`;
-        if (num >= 75) return `<span class="wow-parse-value" data-value="75">${num}</span>`;
-        if (num >= 50) return `<span class="wow-parse-value" data-value="50">${num}</span>`;
-        return `<span class="wow-parse-value" data-value="25">${num}</span>`;
-    }
+// Иконки для характеристик
+const statIcons = {
+    'Сила': 'https://wow.zamimg.com/images/wow/icons/large/ability_warrior_strengthofarms.jpg',
+    'Ловкость': 'https://wow.zamimg.com/images/wow/icons/large/ability_rogue_quickrecovery.jpg',
+    'Выносливость': 'https://wow.zamimg.com/images/wow/icons/large/spell_holy_wordfortitude.jpg',
+    'Скорость': 'https://wow.zamimg.com/images/wow/icons/large/spell_nature_swiftness.jpg',
+    'Критический удар': 'https://wow.zamimg.com/images/wow/icons/large/ability_rogue_deadliness.jpg',
+    'Искусность': 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_book_06.jpg',
+    'Универсальность': 'https://wow.zamimg.com/images/wow/icons/large/ability_paladin_sheathoflight.jpg'
+};
 
-    // Функция для получения данных напрямую со страницы
-    async function getWowStats() {
-        try {
-            const response = await fetch('https://ru.warcraftlogs.com/character/eu/гордунни/Охаёшка');
-            const html = await response.text();
-            const parser = new DOMParser();
-            const doc = parser.parseFromString(html, 'text/html');
+// Иконки для экипировки
+const equipmentIcons = {
+    'Маска торговца Скверной': 'https://wow.zamimg.com/images/wow/icons/large/inv_helm_cloth_raidwarlock_r_01.jpg',
+    'Частично зачарованный амулет': 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_necklace_16.jpg',
+    'Механические хламоплечники': 'https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_plate_raidpaladin_r_01.jpg',
+    'Накидка хламоуправительницы': 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_cape_deathwingraid_d_03.jpg',
+    'Реактор душ торговца Скверной': 'https://wow.zamimg.com/images/wow/icons/large/inv_chest_cloth_raidwarlock_r_01.jpg',
+    'Загребатели торговца Скверной': 'https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_leather_raidrogue_s_01.jpg',
+    'Импровизированный сефорисвый стимулятор': 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_enggizmos_19.jpg',
+    'Хромовзрывчатый сапёрный костюм': 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_enggizmos_20.jpg',
+    'Выкованный навеки длинный меч': 'https://wow.zamimg.com/images/wow/icons/large/inv_sword_1h_artifactdoomhammer_d_01.jpg',
+    'Повышатели градуса': 'https://wow.zamimg.com/images/wow/icons/large/inv_bracer_plate_raidpaladin_r_01.jpg',
+    'Застежка выброса адреналина': 'https://wow.zamimg.com/images/wow/icons/large/inv_belt_plate_raidpaladin_r_01.jpg',
+    'Меховой килт торговца Скверной': 'https://wow.zamimg.com/images/wow/icons/large/inv_pants_leather_raidmonk_q_01.jpg',
+    'Ботинки-спинодолы': 'https://wow.zamimg.com/images/wow/icons/large/inv_boots_plate_raidpaladin_r_01.jpg',
+    'Перстень Цирции': 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_ring_03.jpg',
+    'Кольцо Затуманенного': 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_ring_16.jpg'
+};
 
-            const stats = {
-                characterName: 'Охаёшка',
-                realm: 'Гордунни (EU)',
-                characterClass: 'Охотник на демонов',
-                spec: 'Месть',
-                raidProgress: '1/8 Эпохальный',
-                mPlusRating: '3,011',
-                itemLevel: '668.06',
-                equipment: [],
-                talents: [],
-                raids: [],
-                rankings: {
-                    overall: '95.2',
-                    dps: '94.8',
-                    hps: '92.1',
-                    tank: '96.3'
-                },
-                recentFights: [],
-                bestLogs: [],
-                specInfo: {
-                    mainStats: {
-                        strength: '125',
-                        agility: '3856',
-                        intellect: '198',
-                        stamina: '4521',
-                        crit: '22.5%',
-                        haste: '18.3%',
-                        mastery: '24.1%',
-                        versatility: '12.8%'
-                    },
-                    covenantInfo: 'Ночной Народец',
-                    renownLevel: '80',
-                    soulbinds: ['Корейн', 'Нийя', 'Творец Снов']
-                }
-            };
-
-            // Получаем экипировку с подробной информацией
-            const equipmentItems = doc.querySelectorAll('[data-wowhead]');
-            equipmentItems.forEach(item => {
-                const itemName = item.textContent.trim();
-                const itemLevel = item.nextElementSibling?.textContent.trim();
-                const itemQuality = item.className.includes('q4') ? 'epic' : 
-                                  item.className.includes('q3') ? 'rare' : 'common';
-                const itemSocket = item.querySelector('.socket') !== null;
-                
-                if (itemName && itemLevel) {
-                    stats.equipment.push({
-                        name: itemName,
-                        level: itemLevel,
-                        quality: itemQuality,
-                        hasSocket: itemSocket,
-                        enchanted: item.querySelector('.enchant') !== null
-                    });
-                }
-            });
-
-            // Получаем последние бои
-            const recentFights = doc.querySelectorAll('.recent-fight');
-            recentFights.forEach(fight => {
-                stats.recentFights.push({
-                    boss: fight.querySelector('.boss-name')?.textContent.trim(),
-                    difficulty: fight.querySelector('.difficulty')?.textContent.trim(),
-                    date: fight.querySelector('.fight-date')?.textContent.trim(),
-                    parse: fight.querySelector('.parse-percent')?.textContent.trim(),
-                    rank: fight.querySelector('.rank')?.textContent.trim()
-                });
-            });
-
-            // Получаем лучшие логи
-            const bestLogs = doc.querySelectorAll('.best-parse');
-            bestLogs.forEach(log => {
-                stats.bestLogs.push({
-                    boss: log.querySelector('.boss-name')?.textContent.trim(),
-                    difficulty: log.querySelector('.difficulty')?.textContent.trim(),
-                    parse: log.querySelector('.parse-percent')?.textContent.trim(),
-                    date: log.querySelector('.log-date')?.textContent.trim()
-                });
-            });
-
-            return stats;
-        } catch (error) {
-            console.error('Ошибка при получении данных:', error);
-            return null;
-        }
-    }
-
-    // Функция для отслеживания изменений значений
-    function trackValueChanges(newValue, oldValue, elementSelector) {
-        if (newValue !== oldValue) {
-            const element = document.querySelector(elementSelector);
-            if (element) {
-                element.textContent = newValue;
-                element.classList.add('updated');
-                setTimeout(() => element.classList.remove('updated'), 1000);
-            }
-        }
-        return newValue;
-    }
-
-    // Функция для обновления информации на странице
-    async function updateInfo() {
-        const stats = await getWowStats();
-        if (!stats) return;
-
-        // Сохраняем предыдущие значения
-        const prevStats = {
-            mPlusRating: document.querySelector('.score-text')?.textContent,
-            raidProgress: document.querySelector('.raid-text')?.textContent,
-            itemLevel: document.querySelector('.ilvl-text')?.textContent
+class WarcraftLogsUpdater {
+    constructor() {
+        this.characterName = 'Охаёшка';
+        this.realm = 'Гордунни';
+        this.region = 'eu';
+        this.updateInterval = 60000; // 1 минута
+        this.lastUpdate = 0;
+        this.isUpdating = false;
+        
+        // Обновленные иконки WoW
+        this.statIcons = {
+            itemLevel: 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_gear_01.jpg',
+            strength: 'https://wow.zamimg.com/images/wow/icons/large/ability_warrior_strengthofarms.jpg',
+            agility: 'https://wow.zamimg.com/images/wow/icons/large/ability_rogue_quickrecovery.jpg',
+            intellect: 'https://wow.zamimg.com/images/wow/icons/large/spell_holy_magicalsentry.jpg',
+            stamina: 'https://wow.zamimg.com/images/wow/icons/large/spell_holy_wordfortitude.jpg',
+            crit: 'https://wow.zamimg.com/images/wow/icons/large/ability_rogue_deadliness.jpg',
+            haste: 'https://wow.zamimg.com/images/wow/icons/large/spell_nature_bloodlust.jpg',
+            mastery: 'https://wow.zamimg.com/images/wow/icons/large/spell_holy_championsgrace.jpg',
+            versatility: 'https://wow.zamimg.com/images/wow/icons/large/ability_warrior_intensifyrage.jpg',
+            mythicPlus: 'https://wow.zamimg.com/images/wow/icons/large/achievement_challengemode_gold.jpg'
         };
 
-        // Обновляем основную информацию с отслеживанием изменений
-        stats.mPlusRating = trackValueChanges(stats.mPlusRating, prevStats.mPlusRating, '.score-text');
-        stats.raidProgress = trackValueChanges(stats.raidProgress, prevStats.raidProgress, '.raid-text');
-        stats.itemLevel = trackValueChanges(stats.itemLevel, prevStats.itemLevel, '.ilvl-text');
+        // Базовая статистика персонажа
+        this.characterStats = {
+            itemLevel: 668.06,
+            mythicPlusRating: 3011,
+            raidProgress: '1/8 Эпохальный',
+            allStars: 48,
+            rank: 6505,
+            spec: 'DemonHunter-Vengeance',
+            class: 'Охотник на демонов',
+            race: 'Эльфы крови',
+            equipment: [
+                { name: 'Маска торговца Скверной', level: 662, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_helmet_cloth_raidfelfire_d_01.jpg' },
+                { name: 'Частично зачарованный амулет', level: 662, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_necklace_legionraid_03_blue.jpg', 
+                  gems: ['Рубин универсальности'] },
+                { name: 'Механические хламоплечники', level: 658, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_shoulder_plate_raidwarrior_r_01.jpg' },
+                { name: 'Накидка хламоуправительницы', level: 658, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_cape_draenorraid_d_01.jpg' },
+                { name: 'Реактор душ торговца Скверной', level: 678, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_chest_cloth_raidwarlock_r_01.jpg' },
+                { name: 'Повышатели градуса', level: 665, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_bracer_leather_raiddruid_i_01.jpg' },
+                { name: 'Загребатели торговца Скверной', level: 662, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_gauntlets_cloth_raidwarlock_r_01.jpg' },
+                { name: 'Застежка выброса адреналина', level: 675, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_belt_leather_raiddruid_i_01.jpg' },
+                { name: 'Меховой килт торговца Скверной', level: 678, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_pants_cloth_raidwarlock_r_01.jpg' },
+                { name: 'Ботинки-спиноломы', level: 675, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_boots_plate_raiddeathknight_i_01.jpg' },
+                { name: 'Перстень Цирци', level: 658, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_ring_legionraid_06_blue.jpg', 
+                  gems: ['Искрящийся цитрин владыки грома', 'Рунный цитрин обитателя глубин', 'Рунный цитрин песни ветра'] },
+                { name: 'Кольцо Зачумленного', level: 678, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_jewelry_ring_legionraid_03_blue.jpg',
+                  gems: ['Рубин универсальности', 'Рубин универсальности'] },
+                { name: 'Импровизированный сефориевый стимулятор', level: 665, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_trinket_80_dungeon_trinket2d.jpg' },
+                { name: 'Хромовзрывчатый саперный костюм', level: 665, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_trinket_80_dungeon_trinket1d.jpg' },
+                { name: 'Выкованный навеки длинный меч', level: 675, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_sword_2h_felforgeddemonblade_d_01.jpg' },
+                { name: 'Выкованный навеки длинный меч', level: 675, 
+                  icon: 'https://wow.zamimg.com/images/wow/icons/large/inv_sword_2h_felforgeddemonblade_d_01.jpg' }
+            ]
+        };
+        
+        // Элементы UI
+        this.progressElement = document.querySelector('.stat-value');
+        this.raidProgress = document.querySelector('[data-raid-progress]');
+        
+        // Звуки
+        this.refreshSound = new Audio('sound/1.mp3');
+        this.refreshSound.volume = 0.1;
+        
+        // Initialize
+        this.init();
+    }
 
-        // Обновляем информацию на странице
-        document.querySelector('.character-name-row span').textContent = `${stats.characterName} (${stats.realm})`;
-        document.querySelector('.class-text').textContent = stats.characterClass;
-        document.querySelector('.spec-text').textContent = `(${stats.spec})`;
-
-        // Обновляем рейтинги с анимацией
-        const rankingsHtml = `
-            <div class="wow-info-title">${window.translations.translate('stats')}</div>
-            <div class="rankings-grid">
-                <div class="ranking-item">
-                    <span class="ranking-label">${window.translations.translate('overall')}:</span>
-                    ${formatPercentile(stats.rankings.overall)}
-                </div>
-                <div class="ranking-item">
-                    <span class="ranking-label">${window.translations.translate('dps')}:</span>
-                    ${formatPercentile(stats.rankings.dps)}
-                </div>
-                <div class="ranking-item">
-                    <span class="ranking-label">${window.translations.translate('hps')}:</span>
-                    ${formatPercentile(stats.rankings.hps)}
-                </div>
-                <div class="ranking-item">
-                    <span class="ranking-label">${window.translations.translate('tank')}:</span>
-                    ${formatPercentile(stats.rankings.tank)}
-                </div>
-            </div>
-        `;
-
-        // Обновляем последние бои
-        const recentFightsHtml = `
-            <div class="wow-info-title">${window.translations.translate('recentFights')}</div>
-            <div class="recent-fights-list">
-                ${stats.recentFights.map(fight => `
-                    <div class="fight-item">
-                        <div class="fight-boss">${fight.boss}</div>
-                        <div class="fight-info">
-                            <span class="fight-difficulty">${fight.difficulty}</span>
-                            <span class="fight-parse">${formatPercentile(fight.parse)}</span>
-                            <span class="fight-date">${fight.date}</span>
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-
-        // Обновляем характеристики
-        const statsHtml = `
-            <div class="wow-info-title">${window.translations.translate('stats')}</div>
-            <div class="stats-grid">
-                ${Object.entries(stats.specInfo.mainStats).map(([stat, value]) => `
-                    <div class="stat-item">
-                        <span class="stat-label">${window.translations.translate(stat)}:</span>
-                        <span class="stat-value">${value}</span>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-
-        // Обновляем экипировку
-        const equipmentHtml = `
-            <div class="wow-info-title">${window.translations.translate('equipment')}</div>
-            <div class="equipment-grid">
-                ${stats.equipment.map(item => `
-                    <div class="equipment-item ${item.quality}">
-                        <span class="item-name">${item.name}</span>
-                        <div class="item-details">
-                            <span class="item-level">${item.level}</span>
-                            ${item.hasSocket ? '<span class="item-socket">🔘</span>' : ''}
-                            ${item.enchanted ? '<span class="item-enchant">✨</span>' : ''}
-                        </div>
-                    </div>
-                `).join('')}
-            </div>
-        `;
-
-        // Обновляем панель информации
-        const infoPanel = document.querySelector('.wow-info-panel');
-        if (infoPanel) {
-            infoPanel.innerHTML = rankingsHtml + recentFightsHtml + statsHtml + equipmentHtml;
+    async init() {
+        this.updateStats();
+        this.startAutoRefresh();
+        
+        // Add refresh button handler
+        const refreshButton = document.getElementById('refreshButton');
+        if (refreshButton) {
+            refreshButton.addEventListener('click', () => {
+                this.refreshSound.currentTime = 0;
+                this.refreshSound.play().catch(() => {});
+                this.refreshData();
+            });
         }
+    }
 
-        // Добавляем эффект обновления
-        document.querySelectorAll('.wow-info-stat, .ranking-item, .fight-item, .stat-item, .equipment-item').forEach(element => {
-            element.classList.add('updated');
-            setTimeout(() => element.classList.remove('updated'), 1000);
+    startAutoRefresh() {
+        setInterval(() => this.refreshData(), this.updateInterval);
+    }
+
+    updateStats() {
+        const statsGrid = document.querySelector('.stats-grid');
+        statsGrid.innerHTML = '';
+
+        const stats = {
+            'Сила': '662',
+            'Ловкость': '658',
+            'Выносливость': '678',
+            'Скорость': '665',
+            'Критический удар': '675',
+            'Искусность': '665',
+            'Универсальность': '678'
+        };
+
+        Object.entries(stats).forEach(([stat, value]) => {
+            const statItem = document.createElement('div');
+            statItem.className = 'stat-item';
+            statItem.innerHTML = `
+                <img src="${statIcons[stat]}" alt="${stat}" class="stat-icon">
+                <div>
+                    <div class="stat-label">${stat}</div>
+                    <div class="stat-value">${value}</div>
+                </div>
+            `;
+            statsGrid.appendChild(statItem);
         });
     }
 
-    // Запускаем автообновление каждые 8 секунд
-    setInterval(updateInfo, 8000);
-    
-    // Добавляем обработчик для кнопки обновления
-    const refreshButton = document.getElementById('wowRefreshButton');
-    if (refreshButton) {
-        refreshButton.addEventListener('click', updateInfo);
+    updateEquipment() {
+        const equipmentList = document.querySelector('.equipment-list');
+        equipmentList.innerHTML = '';
+
+        const equipment = {
+            'Маска торговца Скверной': '662',
+            'Частично зачарованный амулет': '662',
+            'Механические хламоплечники': '658',
+            'Накидка хламоуправительницы': '658',
+            'Реактор душ торговца Скверной': '678',
+            'Загребатели торговца Скверной': '662',
+            'Импровизированный сефорисвый стимулятор': '665',
+            'Хромовзрывчатый сапёрный костюм': '665',
+            'Выкованный навеки длинный меч': '675',
+            'Повышатели градуса': '665',
+            'Застежка выброса адреналина': '675',
+            'Меховой килт торговца Скверной': '678',
+            'Ботинки-спинодолы': '675',
+            'Перстень Цирции': '658',
+            'Кольцо Затуманенного': '678'
+        };
+
+        Object.entries(equipment).forEach(([item, itemLevel]) => {
+            const equipmentItem = document.createElement('div');
+            equipmentItem.className = 'equipment-item';
+            
+            // Проверяем наличие иконки и добавляем запасную, если нужно
+            const iconUrl = equipmentIcons[item] || 'https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg';
+            
+            // Добавляем обработчик ошибки загрузки изображения
+            equipmentItem.innerHTML = `
+                <img src="${iconUrl}" 
+                     alt="${item}" 
+                     class="stat-icon"
+                     onerror="this.src='https://wow.zamimg.com/images/wow/icons/large/inv_misc_questionmark.jpg'">
+                <div class="stat-content">
+                    <div class="stat-label">${item}</div>
+                    <div class="stat-value">Уровень предмета: ${itemLevel}</div>
+                </div>
+            `;
+            equipmentList.appendChild(equipmentItem);
+        });
     }
 
-    // Первоначальное обновление
-    updateInfo();
+    async fetchWarcraftLogsData() {
+        // В реальном приложении здесь был бы запрос к API WarcraftLogs
+        // Для демонстрации используем задержку
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Здесь бы обновлялись данные из ответа API
+        this.updateStats();
+        this.updateEquipment();
+    }
 
-    console.log('Расширенный скрипт WoW статистики запущен');
-}); 
+    async refreshData() {
+        if (this.isUpdating) return;
+        
+        this.isUpdating = true;
+        const refreshButton = document.getElementById('refreshButton');
+        refreshButton.classList.add('updating');
+        
+        try {
+            await this.fetchWarcraftLogsData();
+        } catch (error) {
+            console.error('Ошибка обновления данных:', error);
+        } finally {
+            this.isUpdating = false;
+            refreshButton.classList.remove('updating');
+        }
+    }
+}
+
+// Initialize when the page loads
+document.addEventListener('DOMContentLoaded', () => {
+    const updater = new WarcraftLogsUpdater();
+});
+
+function createBubble() {
+    const bubble = document.createElement('div');
+    bubble.className = 'bubble';
+    bubble.style.left = `${Math.random() * 100}%`;
+    bubble.style.width = bubble.style.height = `${Math.random() * 8 + 4}px`;
+    bubble.style.animationDuration = `${Math.random() * 4 + 6}s`;
+    bubbles.appendChild(bubble);
+    
+    // Удаление пузырька после анимации
+    bubble.addEventListener('animationend', () => bubble.remove());
+}
+
+// Создание пузырьков каждые 800мс (меньше пузырьков)
+setInterval(createBubble, 800); 
